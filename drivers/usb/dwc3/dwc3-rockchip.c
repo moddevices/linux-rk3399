@@ -835,14 +835,16 @@ static int dwc3_rockchip_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
-	if (rockchip->dwc->dr_mode == USB_DR_MODE_HOST ||
-	    rockchip->dwc->dr_mode == USB_DR_MODE_OTG) {
+	if ((rockchip->dwc->dr_mode == USB_DR_MODE_HOST ||
+	    rockchip->dwc->dr_mode == USB_DR_MODE_OTG) && rockchip->dwc->xhci != NULL) {
 		rockchip->hcd = dev_get_drvdata(&rockchip->dwc->xhci->dev);
 		if (!rockchip->hcd) {
 			dev_err(dev, "fail to get drvdata hcd\n");
 			ret = -EPROBE_DEFER;
 			goto err2;
 		}
+	} else {
+		rockchip->hcd = NULL;
 	}
 
 	ret = dwc3_rockchip_get_extcon_dev(rockchip);
