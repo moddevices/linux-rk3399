@@ -603,8 +603,6 @@ static void rockchip_spi_config(struct rockchip_spi *rs)
 	writel_relaxed(dmacr, rs->regs + ROCKCHIP_SPI_DMACR);
 
 	spi_set_clk(rs, div);
-
-	dev_dbg(rs->dev, "cr0 0x%x, div %d\n", cr0, div);
 }
 
 static int rockchip_spi_transfer_one(
