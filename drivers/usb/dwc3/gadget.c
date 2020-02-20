@@ -2415,7 +2415,7 @@ static void dwc3_clear_stall_all_ep(struct dwc3 *dwc)
 	}
 }
 
-static void dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
+void dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
 {
 	int			reg;
 
