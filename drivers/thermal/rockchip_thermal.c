@@ -890,7 +890,7 @@ static int predict_temp(int temp)
 	return temp_last;
 }
 
-static int rk_tsadcv3_get_temp(struct chip_tsadc_table table,
+static int rk_tsadcv3_get_temp(const struct chip_tsadc_table *table,
 			       int chn, void __iomem *regs, int *temp)
 {
 	u32 val;
