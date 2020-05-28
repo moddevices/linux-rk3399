@@ -358,6 +358,9 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
 	case 24:
 		iface |= 0x0008;
 		break;
+	case 32:
+		iface |= 0x000c;
+		break;
 	}
 
 	wm8731_set_deemph(codec);
@@ -384,6 +387,11 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+
+#ifdef __MOD_DEVICES__
+	printk("wm8731_set_dai_sysclk %d %u %d\n", clk_id, freq, dir);
+	clk_id = WM8731_SYSCLK_MCLK;
+#endif
 
 	switch (clk_id) {
 	case WM8731_SYSCLK_XTAL:
@@ -541,7 +549,7 @@ static int wm8731_startup(struct snd_pcm_substream *substream,
 #define WM8731_RATES SNDRV_PCM_RATE_8000_96000
 
 #define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
-	SNDRV_PCM_FMTBIT_S24_LE)
+	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 static const struct snd_soc_dai_ops wm8731_dai_ops = {
 	.startup	= wm8731_startup,
