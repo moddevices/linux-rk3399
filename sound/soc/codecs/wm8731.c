@@ -110,7 +110,7 @@ static int wm8731_set_deemph(struct snd_soc_codec *codec)
 		val = 0;
 	}
 
-	dev_dbg(codec->dev, "Set deemphasis %d (%dHz)\n",
+	dev_warn(codec->dev, "Set deemphasis %d (%dHz)\n",
 		best, wm8731_deemph[best]);
 
 	return snd_soc_update_bits(codec, WM8731_APDIGI, 0x6, val);
@@ -390,7 +390,7 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 
 #ifdef __MOD_DEVICES__
 	printk("wm8731_set_dai_sysclk %d %u %d\n", clk_id, freq, dir);
-	clk_id = WM8731_SYSCLK_MCLK;
+	// clk_id = WM8731_SYSCLK_XTAL;
 #endif
 
 	switch (clk_id) {
@@ -440,9 +440,11 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	/* set master/slave audio interface */
 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 	case SND_SOC_DAIFMT_CBM_CFM:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_CBM_CFM\n");
 		iface |= 0x0040;
 		break;
 	case SND_SOC_DAIFMT_CBS_CFS:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_CBS_CFS\n");
 		break;
 	default:
 		return -EINVAL;
@@ -451,17 +453,22 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	/* interface format */
 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 	case SND_SOC_DAIFMT_I2S:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_I2S\n");
 		iface |= 0x0002;
 		break;
 	case SND_SOC_DAIFMT_RIGHT_J:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_RIGHT_J\n");
 		break;
 	case SND_SOC_DAIFMT_LEFT_J:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_LEFT_J\n");
 		iface |= 0x0001;
 		break;
 	case SND_SOC_DAIFMT_DSP_A:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_DSP_A\n");
 		iface |= 0x0013;
 		break;
 	case SND_SOC_DAIFMT_DSP_B:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_DSP_B\n");
 		iface |= 0x0003;
 		break;
 	default:
@@ -471,14 +478,18 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	/* clock inversion */
 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
 	case SND_SOC_DAIFMT_NB_NF:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_NB_NF\n");
 		break;
 	case SND_SOC_DAIFMT_IB_IF:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_IB_IF\n");
 		iface |= 0x0090;
 		break;
 	case SND_SOC_DAIFMT_IB_NF:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_IB_NF\n");
 		iface |= 0x0080;
 		break;
 	case SND_SOC_DAIFMT_NB_IF:
+	printk("wm8731_set_dai_fmt SND_SOC_DAIFMT_NB_IF\n");
 		iface |= 0x0010;
 		break;
 	default:
