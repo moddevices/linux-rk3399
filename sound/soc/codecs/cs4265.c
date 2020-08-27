@@ -626,8 +626,8 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
 	SOC_DOUBLE_R_SX_TLV("PGA Volume", CS4265_CHA_PGA_CTL,
 			      CS4265_CHB_PGA_CTL, 0, 0x28, 0x30, pga_tlv),
 #endif
-	SOC_DOUBLE_R_TLV("DAC Volume", CS4265_DAC_CHA_VOL,
-		      CS4265_DAC_CHB_VOL, 0, 0xFF, 1, dac_tlv),
+	SOC_DOUBLE_R_TLV("DAC Volume", CS4265_DAC_CHB_VOL,
+		      CS4265_DAC_CHA_VOL, 0, 0xFF, 1, dac_tlv),
 	SOC_SINGLE("De-emp 44.1kHz Switch", CS4265_DAC_CTL, 1,
 				1, 0),
 	SOC_SINGLE("DAC INV Switch", CS4265_DAC_CTL2, 5,
