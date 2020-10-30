@@ -75,6 +75,20 @@ static struct _modduox_gpios {
 	bool initialized;
 } *modduox_gpios;
 
+#ifndef _MOD_RESTORE
+static void enable_cpu_counters(void *data)
+{
+	printk("MOD Devices: Enabling user-mode PMU access on CPU #%d\n", smp_processor_id());
+
+	/* Enable user-mode access to counters. */
+	asm volatile("msr PMUSERENR_EL0, %0" :: "r"(1));
+	/* Program PMU and enable all counters */
+	asm volatile("msr PMCR_EL0, %0" :: "r"(23)); // 1|2|4|16
+	asm volatile("msr PMCNTENSET_EL0, %0" :: "r"(0x8000000f));
+	asm volatile("msr PMCCFILTR_EL0, %0" :: "r"(0));
+}
+#endif
+
 static void set_cv_exp_pedal_mode(int mode);
 
 static irqreturn_t exp_flag_irq_handler(int irq, void *dev_id)
@@ -95,7 +109,8 @@ static int modduox_init(struct i2c_client *i2c_client)
 	if (modduox_gpios == NULL)
 		return -ENOMEM;
 
-	modduox_gpios->headphone_cv_mode = devm_gpiod_get(&i2c_client->dev, "headphone_cv_mode", GPIOD_OUT_HIGH);
+	// NOTE: headphone cv mode is GPIOD_OUT_LOW on rk3399, GPIOD_OUT_HIGH on imx8mq
+	modduox_gpios->headphone_cv_mode = devm_gpiod_get(&i2c_client->dev, "headphone_cv_mode", GPIOD_OUT_LOW);
 	modduox_gpios->headphone_clk     = devm_gpiod_get(&i2c_client->dev, "headphone_clk",     GPIOD_OUT_HIGH);
 	modduox_gpios->headphone_dir     = devm_gpiod_get(&i2c_client->dev, "headphone_dir",     GPIOD_OUT_HIGH);
 	modduox_gpios->gain_stage_left1  = devm_gpiod_get(&i2c_client->dev, "gain_stage_left1",  GPIOD_OUT_HIGH);
@@ -156,6 +171,10 @@ static int modduox_init(struct i2c_client *i2c_client)
 	else
 		printk("MOD Devices: Expression Pedal flag IRQ failed!\n");
 
+#ifndef _MOD_RESTORE
+	// enable user-mode access to counters
+	on_each_cpu(enable_cpu_counters, NULL, 1);
+#endif
 	return 0;
 }
 
